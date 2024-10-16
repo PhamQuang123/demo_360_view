@@ -29,8 +29,13 @@ const My360View = () => {
         newIndex = totalFrames + (newIndex % totalFrames);
       }
 
-      setIndex(newIndex);
-      console.log("isNewIndex" + index);
+      if (dx > 0) {
+        // Di chuyển chuột sang trái -> giảm frame
+        setIndex((prevFrame) => (prevFrame > 1 ? prevFrame - 1 : totalFrames));
+      } else if (dx < 0) {
+        // Di chuyển chuột sang phải -> tăng frame
+        setIndex((prevFrame) => (prevFrame < totalFrames ? prevFrame + 1 : 1));
+      }
     }
   };
 
