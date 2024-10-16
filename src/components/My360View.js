@@ -32,7 +32,6 @@ const My360View = () => {
       if (dx < 0) {
         setIndex((prevFrame) => (prevFrame > 1 ? prevFrame - 1 : totalFrames));
       } else if (dx > 0) {
-        // Di chuyển chuột sang phải -> tăng fram
         setIndex((prevFrame) => (prevFrame < totalFrames ? prevFrame + 1 : 1));
       }
     }
