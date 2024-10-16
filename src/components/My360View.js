@@ -13,7 +13,6 @@ const My360View = () => {
     isDragging.current = true;
     startX.current = e.clientX; // Lưu vị trí X ban đầu của chuột
     startIndex.current = index; // Lưu index ban đầu khi bắt đầu kéo
-    console.log("isInitialIndex " + index);
   };
 
   // Hàm xử lý sự kiện khi chuột di chuyển trong khi giữ click
@@ -22,8 +21,6 @@ const My360View = () => {
       const dx = e.clientX - startX.current; // Tính khoảng cách kéo
       const sensitivity = 5; // Độ nhạy khi kéo chuột (tăng số này để xoay nhanh hơn)
       let newIndex = startIndex.current + Math.floor(dx / sensitivity);
-      console.log("isNexxtINdex" + newIndex);
-      console.log(" khoang cach keo" + dx);
 
       // Đảm bảo index không vượt quá tổng số frame và không âm
       if (newIndex > totalFrames) {
@@ -36,17 +33,11 @@ const My360View = () => {
       console.log("isNewIndex" + index);
     }
   };
-  //   const imageNames = Array.from(
-  //     { length: 26 },
-  //     (_, index) => `100_0404/DJI_00${index < 10 ? `0${index}` : index}.png`
-  //   );
 
   // Hàm xử lý khi người dùng thả chuột
   const handleMouseUp = () => {
     isDragging.current = false; // Dừng việc theo dõi chuột
   };
-
-  const fileNamexxx = (index < 10 ? "DJI_000" : "DJI_00") + index + ".JPG";
 
   return (
     <div>
