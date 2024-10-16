@@ -7,6 +7,8 @@ const My360View = () => {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const startIndex = useRef(0);
+  const [pitch, setPitch] = useState(0);
+  const [yaw, setYaw] = useState(0);
 
   // Hàm xử lý sự kiện khi người dùng click giữ chuột
   const handleMouseDown = (e) => {
@@ -19,21 +21,35 @@ const My360View = () => {
   const handleMouseMove = (e) => {
     if (isDragging.current) {
       const dx = e.clientX - startX.current;
-      const sensitivity = 5; // Độ nhạy khi kéo chuột (tăng số này để xoay nhanh hơn)
+      const sensitivity = 20; // Độ nhạy khi kéo chuột (tăng số này để xoay nhanh hơn)
       let newIndex = startIndex.current + Math.floor(dx / sensitivity);
 
-      // Đảm bảo index không vượt quá tổng số frame và không âm
-      if (newIndex > totalFrames) {
-        newIndex = newIndex % totalFrames;
-      } else if (newIndex < 1) {
-        newIndex = totalFrames + (newIndex % totalFrames);
-      }
+      const { clientX, clientY } = e;
+      const height = 650; // Chiều cao của cửa sổ
+      const width = 700; // Chiều rộng của cửa sổ
 
-      if (dx < 0) {
-        setIndex((prevFrame) => (prevFrame > 1 ? prevFrame - 1 : totalFrames));
-      } else if (dx > 0) {
-        setIndex((prevFrame) => (prevFrame < totalFrames ? prevFrame + 1 : 1));
-      }
+      // Tính toán góc nghiêng và góc xoay
+      const newPitch = (clientY / height) * 180 - 90; // Tính toán góc nghiêng
+      const newYaw = (clientX / width) * 360 - 180; // Tính toán góc xoay
+
+      setPitch(newPitch); // Cập nhật góc nghiêng
+      setYaw(newYaw); // Cập nhật góc xoay
+      // Đảm bảo index không vượt quá tổng số frame và không âm
+      // if (newIndex > totalFrames) {
+      //   newIndex = newIndex % totalFrames;
+      // } else if (newIndex < 1) {
+      //   newIndex = totalFrames + (newIndex % totalFrames);
+      // }
+      newIndex = ((newIndex % totalFrames) + totalFrames) % totalFrames;
+
+      // if (dx < 0) {
+      //   setIndex((prevFrame) => (prevFrame > 1 ? prevFrame - 1 : totalFrames));
+      // } else if (dx > 0) {
+      //   setIndex((prevFrame) => (prevFrame < totalFrames ? prevFrame + 1 : 1));
+      // }
+      requestAnimationFrame(() => {
+        setIndex(newIndex);
+      });
     }
   };
 
@@ -51,7 +67,10 @@ const My360View = () => {
         // onMouseMove={handleMouseMove}
         // onMouseUp={handleMouseUp}
         // onMouseLeave={handleMouseUp}
-        style={{ width: "700px", height: "650px" }}
+        style={{
+          width: "700px",
+          height: "650px",
+        }}
       >
         <React360Viewer
           amount={totalFrames}
@@ -60,6 +79,9 @@ const My360View = () => {
           fileName="DJI_00{index}.JPG"
           index={index}
           autoplay={false} // Tắt tự động xoay
+          pitch={pitch} // Góc nghiêng
+          yaw={yaw} // Góc xoay
+          hfov={110} // G
           notifyOnPointerDown={handleMouseDown}
           notifyOnPointerMoved={handleMouseMove}
           notifyOnPointerUp={handleMouseUp}
